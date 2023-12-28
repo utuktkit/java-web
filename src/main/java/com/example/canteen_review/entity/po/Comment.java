@@ -10,13 +10,13 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.Date;
 
-@TableName(value ="comment")
+@TableName(value = "comment")
 @Data
 @NoArgsConstructor
 public class Comment implements Serializable {
     @TableId(value = "comment_id", type = IdType.AUTO)
+    @NotNull(groups = Update.class)
     private Long commentId;
-    @NotNull(groups = Insert.class)
     private Long userId;
     @NotNull(groups = Insert.class)
     private Long dishId;
@@ -31,5 +31,8 @@ public class Comment implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public interface Insert {
+    }
+
+    public interface Update {
     }
 }

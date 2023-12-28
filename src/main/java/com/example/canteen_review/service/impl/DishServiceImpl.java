@@ -3,6 +3,7 @@ package com.example.canteen_review.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.canteen_review.entity.po.Dish;
+import com.example.canteen_review.entity.vo.CommentVO;
 import com.example.canteen_review.mapper.DishMapper;
 import com.example.canteen_review.service.DishService;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,8 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish>
                 .eq(canteenId != null, Dish::getCanteenId, canteenId)
                 .orderByAsc(isPriceAsc != null && isPriceAsc, Dish::getPrice)
                 .orderByDesc(isPriceAsc != null && !isPriceAsc, Dish::getPrice)
-                .orderByAsc(isRatingAsc != null && isRatingAsc, Dish::getRatingPeople)
-                .orderByDesc(isRatingAsc != null && !isRatingAsc, Dish::getRatingPeople);
+                .orderByAsc(isPriceAsc == null && isRatingAsc != null && isRatingAsc, Dish::getRatingPeople)
+                .orderByDesc(isPriceAsc == null && isRatingAsc != null && !isRatingAsc, Dish::getRatingPeople);
 
         return list(queryWrapper);
     }
@@ -38,6 +39,14 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish>
     @Override
     public void updateRating(Long dishId) {
         baseMapper.updateRating(dishId);
+    }
+
+    @Override
+    public void removeByCanteenId(Long canteenId) {
+        LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper<Dish>()
+                .eq(Dish::getCanteenId, canteenId);
+
+        remove(wrapper);
     }
 }
 

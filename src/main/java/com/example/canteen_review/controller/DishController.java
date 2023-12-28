@@ -32,9 +32,12 @@ public class DishController {
     @PutMapping("/updateDish")
     public Result updateDish(@RequestBody @Validated(Dish.Update.class) Dish dish) {
 
-        if (dishService.getByCanteenIdAndName(dish.getCanteenId(), dish.getName())!= null) {
+        if (dishService.getByCanteenIdAndName(dish.getCanteenId(), dish.getName()) != null) {
             return Result.error("菜品名称重复");
         }
+
+        dish.setRate(null);
+        dish.setRatingPeople(null);
 
         dishService.updateById(dish);
 
@@ -55,7 +58,6 @@ public class DishController {
 
     @GetMapping("/listDish")
     public Result listDish(String name, Long canteenId, Boolean isPriceAsc, Boolean isRatingAsc) {
-
         if (canteenId != null && canteenService.getById(canteenId) == null) {
             return Result.error("餐厅不存在");
         }

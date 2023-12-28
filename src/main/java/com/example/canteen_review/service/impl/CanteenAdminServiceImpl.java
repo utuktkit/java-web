@@ -2,6 +2,7 @@ package com.example.canteen_review.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.canteen_review.entity.po.Canteen;
 import com.example.canteen_review.entity.po.CanteenAdmin;
 import com.example.canteen_review.entity.po.User;
 import com.example.canteen_review.service.CanteenAdminService;
@@ -25,6 +26,28 @@ public class CanteenAdminServiceImpl extends ServiceImpl<CanteenAdminMapper, Can
     @Override
     public List<User> listByCanteenId(Long canteenId) {
         return baseMapper.listByCanteenId(canteenId);
+    }
+
+    @Override
+    public Boolean checkRepetition(Long canteenId, Long userId) {
+        LambdaQueryWrapper<CanteenAdmin> wrapper = new LambdaQueryWrapper<CanteenAdmin>()
+                .eq(CanteenAdmin::getCanteenId, canteenId)
+                .eq(CanteenAdmin::getUserId, userId);
+
+        return getOne(wrapper) != null;
+    }
+
+    @Override
+    public void removeByCanteenId(Long canteenId) {
+        LambdaQueryWrapper<CanteenAdmin> wrapper = new LambdaQueryWrapper<CanteenAdmin>()
+                .eq(CanteenAdmin::getCanteenId, canteenId);
+
+        remove(wrapper);
+    }
+
+    @Override
+    public Canteen getByUserId(Long userId) {
+        return baseMapper.getByUserId(userId);
     }
 }
 

@@ -20,4 +20,28 @@
         score,content,state,
         create_time,update_time
     </sql>
+
+    <select id="listByCanteen" resultType="com.example.canteen_review.entity.vo.CommentVO">
+        select comment.*, dish.name as dish_name, user.username
+        from comment
+                 inner join dish on comment.dish_id = dish.dish_id
+                 inner join canteen on dish.canteen_id = canteen.canteen_id
+                 inner join user on comment.user_id = user.user_id
+        where canteen.canteen_id = #{canteenId}
+    </select>
+    <select id="listCommentVO" resultType="com.example.canteen_review.entity.vo.CommentVO">
+        select comment.*, dish.name as dish_name, user.username
+        from comment
+        inner join dish on comment.dish_id = dish.dish_id
+        inner join canteen on dish.canteen_id = canteen.canteen_id
+        inner join user on comment.user_id = user.user_id
+        <where>
+            <if test="dishId!= null">
+                comment.dish_id = #{dishId}
+            </if>
+            <if test="userId!= null">
+                comment.user_id = #{userId}
+            </if>
+        </where>
+    </select>
 </mapper>
