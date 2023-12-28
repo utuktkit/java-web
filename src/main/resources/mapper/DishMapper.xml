@@ -32,9 +32,9 @@
                            FROM comment
                            WHERE comment.dish_id = #{dishId}
                              AND comment.state = 1),
-            rate=(SELECT AVG(comment.score)
+            rate=(SELECT COALESCE(AVG(comment.score), 0) AS average_score
                   FROM comment
-                  WHERE comment.dish_id = #{dishId}
+                  WHERE comment.dish_id = 2
                     AND comment.state = 1)
         WHERE dish_id = #{dishId}
     </update>

@@ -25,7 +25,7 @@ public class User implements Serializable {
     private String avatar;
     private Integer type;
     private Integer level;
-    private Long exp;
+    private Integer exp;
     private Date createTime;
     private Date updateTime;
 

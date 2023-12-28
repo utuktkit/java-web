@@ -6,8 +6,11 @@ import com.example.canteen_review.entity.po.User;
 import com.example.canteen_review.service.CanteenAdminService;
 import com.example.canteen_review.service.CanteenService;
 import com.example.canteen_review.service.UserService;
+import com.example.canteen_review.utils.ThreadLocalUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/canteenAdmin")
@@ -29,6 +32,48 @@ public class CanteenAdminController {
 
         if (user.getType() < 2) {
             return Result.error("用户权限不足");
+        }
+
+        if (canteenAdminService.checkRepetition(canteenId, userId)) {
+            return Result.error("重复添加");
+        }
+
+        CanteenAdmin canteenAdmin = new CanteenAdmin();
+        canteenAdmin.setCanteenId(canteenId);
+        canteenAdmin.setUserId(userId);
+
+        canteenAdminService.save(canteenAdmin);
+
+        return Result.success();
+    }
+
+    @PostMapping("/addByCanteenName")
+    public Result addByCanteenName(String canteenName, Long userId) {
+
+        Long canteenId = canteenService.getByName(canteenName).getCanteenId();
+
+        if (canteenId == null) {
+            return Result.error("食堂不存在");
+        }
+
+        User user = userService.getById(userId);
+        if (user == null) {
+            return Result.error("用户不存在");
+        }
+
+        user.setType(2);
+        userService.updateById(user);
+
+//        if (user.getType() < 2) {
+//            return Result.error("用户权限不足");
+//        }
+
+        if (canteenAdminService.getByUserId(userId) == null) {
+            return Result.error("用户已在管理餐厅");
+        }
+
+        if (canteenAdminService.checkRepetition(canteenId, userId)) {
+            return Result.error("重复添加");
         }
 
         CanteenAdmin canteenAdmin = new CanteenAdmin();
@@ -57,8 +102,13 @@ public class CanteenAdminController {
         return Result.success();
     }
 
-    @GetMapping("/ListByCanteenId")
-    public Result ListByCanteenId(Long canteenId) {
+    @GetMapping("/listByCanteenId")
+    public Result listByCanteenId(Long canteenId) {
         return Result.success(canteenAdminService.listByCanteenId(canteenId));
+    }
+
+    @GetMapping("/getCanteenByAdminId")
+    public Result getCanteenByAdminId(Long userId) {
+        return Result.success(canteenAdminService.getByUserId(userId));
     }
 }

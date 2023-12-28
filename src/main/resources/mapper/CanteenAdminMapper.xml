@@ -22,4 +22,10 @@
                  INNER JOIN user ON canteen_admin.user_id = user.user_id
         WHERE canteen_admin.canteen_id = #{canteenId}
     </select>
+    <select id="getByUserId" resultType="com.example.canteen_review.entity.po.Canteen">
+        SELECT canteen.*
+        FROM canteen_admin
+                 INNER JOIN canteen ON canteen_admin.canteen_id = canteen.canteen_id
+        WHERE canteen_admin.user_id = #{userId}
+    </select>
 </mapper>
